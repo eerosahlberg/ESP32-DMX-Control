@@ -1,0 +1,45 @@
+/*style h1 and p to look modern*/
+
+h1 {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 2em;
+    color: #000;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+p {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1em;
+    color: #000;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+/*style buttons to look modern and align them to left*/
+
+button {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1em;
+    color: #000;
+    text-align: center;
+    padding: 0.25em 1em;
+    background-color: rgb(124, 204, 228);
+    border: 1px solid #000;
+    border-radius: 5px;
+    width: 100px;
+    height: 30px;
+    margin: 0.2em;
+    display: block;
+}
+
+/*style color-picker to look modern*/
+
+.color-picker {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+    display: block;
+}
