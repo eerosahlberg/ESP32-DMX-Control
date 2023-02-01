@@ -1,2 +1,2 @@
-#define SSID "your-ssid"
-#define PASSWORD "your-password"
+#define SSID "vappula"
+#define PASSWORD "laaksolahti1963"
