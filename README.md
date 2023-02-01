@@ -4,10 +4,10 @@ A simple DMX controller made with an ESP32 and a MAX485 chip. The ESP32 is conne
 
 ## Hardware
 
-ESP32-WROOM-32
-MAX485 TTL to RS485 converter
-(DMX512 3-pin XLR connector)
-(10uF capasitor between EN and GND to boot the ESP32 without pressing the boot button)
+-   ESP32-WROOM-32
+-   MAX485 TTL to RS485 converter
+-   (DMX512 3-pin XLR connector)
+-   (10uF capasitor between EN and GND to boot the ESP32 without pressing the boot button)
 
 ![ESP32-DMX-Control Hardware setup](DMX-control-hardware.png)
 
