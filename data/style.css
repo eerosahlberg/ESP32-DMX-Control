@@ -1,45 +1,160 @@
 /*style h1 and p to look modern*/
-
+html {
+	font-family: 'Open Sans', sans-serif;
+	font-size: 1.5vh;
+	color: #000;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+}
+.color-buttons {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+	margin: 1em auto;
+	width: 100%;
+	max-width: 500px;
+	padding: 0;
+	list-style: none;
+}
+.color-picker {
+	width: 8em;
+	height: 4em;
+	margin: 0.5em auto;
+	display: block;
+	border-radius: 0.2em;
+	border: 1px solid #000;
+}
 h1 {
-    font-family: 'Open Sans', sans-serif;
-    font-size: 2em;
-    color: #000;
-    text-align: center;
-    margin: 0;
-    padding: 0;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 2em;
+	color: #000;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+}
+h1.title {
+	font-family: 'Open Sans', sans-serif;
+	font-size: 2em;
+	animation: rainbow-text 5s infinite linear;
+}
+
+@keyframes rainbow-text {
+	0% {
+		color: #ff0000;
+	}
+	12.5% {
+		color: #ff7f00;
+	}
+	25% {
+		color: #ffff00;
+	}
+	37.5% {
+		color: #00ff00;
+	}
+	50% {
+		color: #00a2ff;
+	}
+	62.5% {
+		color: #0000ff;
+	}
+	75% {
+		color: #4b0082;
+	}
+	87.7% {
+		color: #8b00ff;
+	}
+	100% {
+		color: #ff0000;
+	}
+}
+h2 {
+	font-family: 'Open Sans', sans-serif;
+	font-size: 1.6em;
+	color: #000;
+	text-align: center;
+	margin: 0;
+	padding: 0;
 }
 
 p {
-    font-family: 'Open Sans', sans-serif;
-    font-size: 1em;
-    color: #000;
-    text-align: center;
-    margin: 0;
-    padding: 0;
+	font-family: 'Open Sans', sans-serif;
+	color: #000;
+	text-align: center;
+	margin: 0;
+	padding: 0;
 }
 
 /*style buttons to look modern and align them to left*/
 
-button {
-    font-family: 'Open Sans', sans-serif;
-    font-size: 1em;
-    color: #000;
-    text-align: center;
-    padding: 0.25em 1em;
-    background-color: rgb(124, 204, 228);
-    border: 1px solid #000;
-    border-radius: 5px;
-    width: 100px;
-    height: 30px;
-    margin: 0.2em;
-    display: block;
+/* CSS */
+.button-4 {
+	appearance: none;
+	background-color: #fafbfc;
+	border: 1px solid rgba(27, 31, 35, 0.15);
+	border-radius: 0.5em;
+	box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+	box-sizing: border-box;
+	color: #24292e;
+	cursor: pointer;
+	display: inline-block;
+	font-family: -apple-system, system-ui, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+	font-size: 1.5em;
+	font-weight: 500;
+	line-height: 1em;
+	list-style: none;
+	padding: 0.4em 1.1em;
+	position: relative;
+	transition: background-color 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+	user-select: none;
+	-webkit-user-select: none;
+	touch-action: manipulation;
+	vertical-align: middle;
+	white-space: nowrap;
+	word-wrap: break-word;
+	margin: 0 0.3em 0.3em 0;
 }
 
-/*style color-picker to look modern*/
+.button-4:hover {
+	background-color: #f3f4f6;
+	text-decoration: none;
+	transition-duration: 0.1s;
+}
 
-.color-picker {
-    width: 100px;
-    height: 100px;
-    margin: 0 auto;
-    display: block;
+.button-4:disabled {
+	background-color: #fafbfc;
+	border-color: rgba(27, 31, 35, 0.15);
+	color: #959da5;
+	cursor: default;
+}
+
+.button-4:active {
+	background-color: #edeff2;
+	box-shadow: rgba(225, 228, 232, 0.2) 0 1px 0 inset;
+	transition: none 0s;
+}
+
+.button-4:focus {
+	outline: 1px transparent;
+}
+
+.button-4:before {
+	display: none;
+}
+
+.button-4:-webkit-details-marker {
+	display: none;
+}
+
+#color-picker-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+	margin: 1em auto;
+	width: 100%;
+	max-width: 500px;
+	padding: 0;
+	list-style: none;
 }

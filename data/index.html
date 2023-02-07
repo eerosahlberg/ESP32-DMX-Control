@@ -4,28 +4,81 @@
 		<meta charset="utf-8" />
 		<title>Valo-ohjain</title>
 		<link rel="stylesheet" href="style.css" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 	</head>
 	<body>
-		<h1>Valo-ohjain</h1>
+		<h1 class="title">Valo-ohjain</h1>
 
-		<button onclick="sendColor(255, 0, 0)">Punainen</button>
-		<button onclick="sendColor(0, 255, 0)">Vihreä</button>
-		<button onclick="sendColor(0,0,255)">Sininen</button>
+		<div class="color-buttons">
+			<button class="button-4" onclick="sendColor(255, 0, 0)">Punainen</button>
+			<button class="button-4" onclick="sendColor(0, 255, 0)">Vihreä</button>
+			<button class="button-4" onclick="sendColor(0,0,255)">Sininen</button>
+		</div>
 
-		<input type="color" id="color-picker" />
-		<button onclick="sendPickerData()" ;>Valitse</button>
+		<div class="color-picker-container">
+			<h2>Valitse väri</h2>
+			<input
+				type="color"
+				class="color-picker"
+				id="color-picker"
+				oninput="sendColor(parseInt(this.value.substring(1, 3), 16), parseInt(this.value.substring(3, 5), 16),  parseInt(this.value.substring(5, 7), 16))"
+			/>
+			<button class="button-4" onclick="sendPickerData()">Aseta väri</button>
+		</div>
+
+		<div class="color-slider-picker-container">
+			<div>
+				<h2>Valitse liukuvärin värit</h2>
+			</div>
+		</div>
+		<button onclick="addColorPicker()" class="button-4">Lisää uusi väri</button>
+		<!-- <button onclick="removeColorPicker()" class="button-4">Poista väri</button> -->
+
+		<div style="margin-bottom: 0.5em">
+			<h3>Nopeus:</h3>
+			<input
+				type="range"
+				min="1"
+				max="255"
+				value="0"
+				class="slider"
+				id="speed-slider"
+				oninput="sendSliderSpeed(this.value)"
+			/>
+		</div>
+		<button style="display: none" class="button-4" id="set-slider-colors-button" onclick="sendSliderColors()">
+			Aseta värit
+		</button>
+
+		<template id="color-picker-template">
+			<div style="margin: auto; display: inline-block">
+				<h3>Väri <slot name="template-no"></slot></h3>
+				<input
+					type="color"
+					class="color-picker"
+					oninput="colorPickerSliderArray[parseInt(this.parentElement.querySelector('slot[name=template-no]').innerHTML) - 1] = {red: parseInt(this.value.substring(1,3), 16), green: parseInt(this.value.substring(3, 5), 16), blue: parseInt(this.value.substring(5, 7), 16)}; console.log(colorPickerSliderArray);"
+				/>
+			</div>
+		</template>
+
+		<template id="set-slider-colors-button"> </template>
 
 		<script>
+			let colorPickerAmount = 0;
+
+			let colorPickerSliderArray = [];
+
 			function sendPickerData() {
 				var data = document.getElementById('color-picker').value;
 				var red = parseInt(data.substring(1, 3), 16);
 				var green = parseInt(data.substring(3, 5), 16);
 				var blue = parseInt(data.substring(5, 7), 16);
-				var data = { red: red, green: green, blue: blue };
+				sendColor(red, green, blue);
+				/* var data = { red: red, green: green, blue: blue };
 				var xhr = new XMLHttpRequest();
 				xhr.open('POST', '/set-color', true);
 				xhr.setRequestHeader('Content-Type', 'application/json');
-				xhr.send(JSON.stringify(data));
+				xhr.send(JSON.stringify(data)); */
 			}
 			function sendColor(red, green, blue) {
 				var data = { red: red, green: green, blue: blue };
@@ -33,6 +86,62 @@
 				xhr.open('POST', '/set-color', true);
 				xhr.setRequestHeader('Content-Type', 'application/json');
 				xhr.send(JSON.stringify(data));
+			}
+			function sendSliderSpeed(speed) {
+				var data = { speed: speed };
+				var xhr = new XMLHttpRequest();
+				xhr.open('POST', '/set-slider-speed', true);
+				xhr.setRequestHeader('Content-Type', 'application/json');
+				xhr.send(JSON.stringify(data));
+			}
+			function addColorPicker() {
+				if (colorPickerAmount === 8) {
+					alert('Liian monta väriä!');
+					return;
+				}
+				colorPickerAmount++;
+				console.log(colorPickerAmount);
+				var template = document.getElementById('color-picker-template');
+				var clone = template.content.cloneNode(true);
+				clone.querySelector('slot[name="template-no"]').innerHTML = colorPickerAmount;
+				document.querySelector('.color-slider-picker-container').appendChild(clone);
+				colorPickerSliderArray.push({ red: 0, green: 0, blue: 0 });
+				showSetSliderColorsButton();
+			}
+
+			/* function removeColorPicker() {
+				if (colorPickerAmount === 0) {
+					alert('Et voi poistaa enempää!');
+					return;
+				}
+				colorPickerAmount--;
+				console.log(colorPickerAmount);
+				var colorPickerContainer = document.querySelector('.color-slider-picker-container');
+				colorPickerContainer.removeChild(colorPickerContainer.lastChild);
+				colorPickerSliderArray.pop();
+				showSetSliderColorsButton();
+			} */
+
+			//show set slider colors button if there is more than one color picker
+			function showSetSliderColorsButton() {
+				if (colorPickerAmount > 1) {
+					var set_slider_colors_button = document.getElementById('set-slider-colors-button');
+					set_slider_colors_button.style.display = 'inline-block';
+				}
+			}
+
+			function sendSliderColors() {
+				if (colorPickerSliderArray.length === 0) {
+					alert('Et ole valinnut yhtään väriä!');
+					return;
+				}
+				colorPickerSliderArray.push(colorPickerSliderArray[0]);
+				var xhr = new XMLHttpRequest();
+				xhr.open('POST', '/set-slider-colors', true);
+				xhr.setRequestHeader('Content-Type', 'application/json');
+				xhr.send(JSON.stringify(colorPickerSliderArray));
+
+				console.log(colorPickerSliderArray);
 			}
 		</script>
 	</body>
