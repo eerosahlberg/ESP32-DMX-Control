@@ -18,3 +18,20 @@ The software is written in C++ and uses the Arduino framework. The ESP32 is prog
 ## Web interface
 
 The web interface is made with the ESPAsyncWebServer library. The web interface is served from the ESP32 and can be accessed via the IP address of the ESP32.
+
+## DMX interface
+
+The code is made to be used with a DMX-light with 3 channels. The first channel is used to control the red color, the second channel is used to control the green color, the third channel is used to control the blue color. The code can be easily changed to work with other DMX-lights.
+
+## Usage
+
+The ESP32 can be programmed with PlatformIO, and the code can be uploaded to the ESP32 via USB. Usage of the web interface requires a WiFi network. WiFi-network SSID and password have to be set in a separate file called `credentials.h`. The file should be placed in the `src` folder and should contain the following lines:
+
+    #define WIFI_SSID "your_wifi_ssid"
+    #define WIFI_PASSWORD "your_wifi_password"
+
+The web interface's source files are located in the `data` folder. The files have to be uploaded to the ESP32's SPIFFS filesystem. This can be done with the PlatformIO "Upload Filesystem Image" command.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
