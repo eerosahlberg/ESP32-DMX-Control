@@ -8,13 +8,17 @@
 #include <ESPmDNS.h>
 #include "credentials.h"
 #include <AsyncElegantOTA.h>
+#include <Preferences.h>
+#include <iostream>
+
+Preferences preferences;
 
 int transmitPin = 27;
 int receivePin = 4;
 int enablePin = 5;
 
 //Slider variables
-bool useSLiderColors = false;
+bool useSliderColors = false;
 int slider_r = 0;
 int slider_g = 0;
 int slider_b = 0;
@@ -52,8 +56,22 @@ AsyncCallbackJsonWebHandler *handler = new AsyncCallbackJsonWebHandler("/set-col
   data[2] = obj["red"];
   data[3] = obj["green"];
   data[4] = obj["blue"];
-  useSLiderColors = false;
+  useSliderColors = false;
   request->send(200); 
+
+  preferences.begin("color", false);
+  preferences.putInt("red", int32_t(obj["red"]));
+  preferences.putInt("green", int32_t(obj["green"]));
+  preferences.putInt("blue", int32_t(obj["blue"]));
+
+  Serial.println(preferences.getInt("red", 0));
+  Serial.println(preferences.getInt("green", 0));
+  Serial.println(preferences.getInt("blue", 0));
+  preferences.end();
+
+  preferences.begin("slider", false);
+  preferences.putBool("useSliderColors", useSliderColors);
+  preferences.end();
 });
 
 void initializeSliderColors(){
@@ -73,13 +91,21 @@ AsyncCallbackJsonWebHandler *handler2 = new AsyncCallbackJsonWebHandler("/set-sl
     sliderColorDataArray[i].red = obj[i]["red"];
     sliderColorDataArray[i].green = obj[i]["green"];
     sliderColorDataArray[i].blue = obj[i]["blue"];
-    Serial.println(sliderColorDataArray[i].red);
-    Serial.println(sliderColorDataArray[i].green);
-    Serial.println(sliderColorDataArray[i].blue);
   }
-  useSLiderColors = true;
+  useSliderColors = true;
   initializeSliderColors();
   request->send(200);
+
+  preferences.begin("slider", false);
+  preferences.putInt("sliderArrayLength", sliderArrayLength);
+  for (int i = 0; i < sliderArrayLength; i++)
+  {
+    preferences.putInt("red"+static_cast<char>(i), int32_t(sliderColorDataArray[i].red));
+    preferences.putInt("green"+static_cast<char>(i), int32_t(sliderColorDataArray[i].green));
+    preferences.putInt("blue"+static_cast<char>(i), int32_t(sliderColorDataArray[i].blue));
+  }
+  preferences.putBool("useSliderColors", useSliderColors);
+  preferences.end();
 });
 
 AsyncCallbackJsonWebHandler *handler3 = new AsyncCallbackJsonWebHandler("/set-slider-speed", [](AsyncWebServerRequest *request, JsonVariant &json)
@@ -91,6 +117,10 @@ AsyncCallbackJsonWebHandler *handler3 = new AsyncCallbackJsonWebHandler("/set-sl
   slider_speed = floor(100*pow(256-rawSpeed, 0.33));
   //Serial.println(slider_speed);
   request->send(200);
+
+  preferences.begin("slider", false);
+  preferences.putInt("slider_speed", slider_speed);
+  preferences.end();
 });
 
 void initWiFi()
@@ -132,6 +162,39 @@ void initWiFi()
   server.begin();
 }
 
+void loadSavedColor(){
+  preferences.begin("slider", false);
+
+  if(preferences.getBool("useSliderColors", false)){
+    useSliderColors = true;
+    sliderArrayLength = preferences.getInt("sliderArrayLength", 0);
+    for (int i = 0; i < sliderArrayLength; i++)
+    {
+      sliderColorDataArray[i].red = preferences.getInt("red"+static_cast<char>(i), 255);
+      sliderColorDataArray[i].green = preferences.getInt("green"+static_cast<char>(i), 255);
+      sliderColorDataArray[i].blue = preferences.getInt("blue"+static_cast<char>(i), 255);
+    }
+    slider_speed = preferences.getInt("slider_speed", 1);
+    initializeSliderColors();
+    preferences.end();
+  }
+  else{
+    preferences.end();
+    preferences.begin("color", false);
+    data[2] = preferences.getInt("red", 255);
+    data[3] = preferences.getInt("green", 255);
+    data[4] = preferences.getInt("blue", 255);
+    Serial.println(preferences.getInt("red", 0));
+    Serial.println(preferences.getInt("green", 0));
+    Serial.println(preferences.getInt("blue", 0));
+    Serial.println("Loaded color from preferences");
+    preferences.end();
+  }
+
+  data[0] = 0;
+  data[1] = 255;
+}
+
 void setup()
 {
   Serial.begin(115200);
@@ -151,20 +214,18 @@ void setup()
   dmx_driver_install(dmxPort, DMX_MAX_PACKET_SIZE, QueueSize, NULL, interrupPriority);
 
   dmx_set_mode(dmxPort, DMX_MODE_WRITE);
-  data[0] = 0;
-  data[1] = 255;
-  data[2] = 0;
-  data[3] = 255;
-  data[4] = 0;
+
+  loadSavedColor();
 
   initWiFi();
 
+  // set pin 25 to HIGH to enable the DMX transceiver
   pinMode(25, OUTPUT);
   digitalWrite(25, HIGH);
 }
 
 void updateSliderColors(){
-  if(useSLiderColors){
+  if(useSliderColors){
     if(slider_index == slider_speed){
       if(slider_color_index == sliderArrayLength-2){
         slider_color_index = 0;  
