@@ -7,6 +7,7 @@
 #include <SPIFFS.h>
 #include <ESPmDNS.h>
 #include "credentials.h"
+#include <AsyncElegantOTA.h>
 
 int transmitPin = 27;
 int receivePin = 4;
@@ -55,10 +56,10 @@ AsyncCallbackJsonWebHandler *handler = new AsyncCallbackJsonWebHandler("/set-col
   request->send(200); 
 });
 
-void initializeSliderColors(int startFrom){
-  slider_r = map(0, 0, 100, sliderColorDataArray[startFrom].red, sliderColorDataArray[startFrom+1].red);
-  slider_g = map(0, 0, 100, sliderColorDataArray[startFrom].green, sliderColorDataArray[startFrom+1].green);
-  slider_b = map(0, 0, 100, sliderColorDataArray[startFrom].blue, sliderColorDataArray[startFrom+1].blue);
+void initializeSliderColors(){
+  slider_r = sliderColorDataArray[0].red;
+  slider_g = sliderColorDataArray[0].green;
+  slider_b = sliderColorDataArray[0].blue;
   slider_index = 0;
 }
 
@@ -77,7 +78,7 @@ AsyncCallbackJsonWebHandler *handler2 = new AsyncCallbackJsonWebHandler("/set-sl
     Serial.println(sliderColorDataArray[i].blue);
   }
   useSLiderColors = true;
-  initializeSliderColors(0);
+  initializeSliderColors();
   request->send(200);
 });
 
@@ -127,6 +128,7 @@ void initWiFi()
   server.addHandler(handler);
   server.addHandler(handler2);
   server.addHandler(handler3);
+  AsyncElegantOTA.begin(&server);    // Start ElegantOTA
   server.begin();
 }
 

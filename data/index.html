@@ -135,7 +135,12 @@
 					alert('Et ole valinnut yhtään väriä!');
 					return;
 				}
-				colorPickerSliderArray.push(colorPickerSliderArray[0]);
+				if (colorPickerSliderArray.length === colorPickerAmount) {
+					colorPickerSliderArray.push(colorPickerSliderArray[0]);
+				} else {
+					colorPickerSliderArray[colorPickerAmount] = colorPickerSliderArray[0];
+				}
+
 				var xhr = new XMLHttpRequest();
 				xhr.open('POST', '/set-slider-colors', true);
 				xhr.setRequestHeader('Content-Type', 'application/json');
